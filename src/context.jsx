@@ -21,11 +21,9 @@ class ProductProvider extends Component {
   }
 
   setProducts = () => {
-    let tempProducts = [];
-    storeProducts.forEach((item) => {
-      const singleItem = { ...item };
-      tempProducts = [...tempProducts, singleItem];
-    });
+    // because storeProducts is an object without any functions
+    // its faster to use JSON.parse JSON.stringify
+    let tempProducts = JSON.parse(JSON.stringify(storeProducts));
     this.setState(() => {
       return { products: tempProducts };
     });
@@ -49,8 +47,11 @@ class ProductProvider extends Component {
     const price = product.price;
     product.total = price;
     this.setState(
-      () => {
-        return { products: tempProducts, cart: [...this.state.cart, product] };
+      (state) => {
+        // [...state.cart, product] this is an object. it copies all the properties from previous
+        // state.cart and also adds the new product to the state.cart
+        // also i should always pass function to this.setState
+        return { products: tempProducts, cart: [...state.cart, product] };
       },
       () => {
         this.addTotals();
